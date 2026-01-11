@@ -4,7 +4,7 @@ An interactive visualizations dashboard for exploring **29 years** of Ontario pu
 
 This project transforms millions of raw government records (1996-2024) into a fast, static web experience that allows users to analyze trends, search for individuals, and compare employers across the province.
 
-![Screenshot](https://via.placeholder.com/800x400?text=Dashboard+Preview)
+![Dashboard Screenshot](dashboard_preview.png)
 
 ## 🚀 Live Demo
 *(Add your Netlify/GitHub Pages link here)*
