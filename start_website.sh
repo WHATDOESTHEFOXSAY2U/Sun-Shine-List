@@ -3,7 +3,7 @@
 
 echo "🌞 Starting Sunshine List Explorer..."
 echo ""
-echo "Open your browser to: http://localhost:8080/website/index.html"
+echo "Open your browser to: http://localhost:8080/index.html"
 echo ""
 echo "Press Ctrl+C to stop the server"
 echo ""
