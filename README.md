@@ -1,6 +1,6 @@
 # ☀️ Ontario Sunshine List Explorer
 
-An interactive visualizations dashboard for exploring **29 years** of Ontario public sector salary disclosure data (The "Sunshine List"). 
+[Website](https://whatdoesthefoxsay2u.github.io/Sun-Shine-List/) : An interactive visualizations dashboard for exploring **29 years** of Ontario public sector salary disclosure data (The "Sunshine List"). 
 
 This project transforms millions of raw government records (1996-2024) into a fast, static web experience that allows users to analyze trends, search for individuals, and compare employers across the province.
 
