@@ -1,0 +1,145 @@
+/* ============================================
+   PAGE-SPECIFIC STYLES
+   Additional styles for specific pages
+   ============================================ */
+
+/* Distribution Page */
+#tab-distribution .card canvas {
+    max-height: 350px;
+}
+
+/* Top Earners Page */
+#tab-top-earners .data-table {
+    min-width: 900px;
+}
+
+#tab-top-earners .table-card {
+    overflow-x: auto;
+}
+
+/* Top Employers Page */
+#tab-employers .data-table {
+    min-width: 1000px;
+}
+
+#tab-employers .table-card {
+    overflow-x: auto;
+}
+
+/* Top Jobs Page */
+#tab-jobs .data-table {
+    min-width: 900px;
+}
+
+#tab-jobs .table-card {
+    overflow-x: auto;
+}
+
+/* Find Employer Page */
+#tab-find-employer .employer-rankings {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+/* Sectors Page */
+#tab-sectors canvas {
+    max-height: 600px;
+    width: 100%;
+}
+
+#tab-sectors .sector-toggles {
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+/* Trends Page */
+#tab-trends canvas {
+    max-height: 600px;
+    width: 100%;
+}
+
+/* Slider Value Inputs */
+.slider-value-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 8px;
+    border-radius: var(--radius-lg);
+}
+
+.slider-number-input {
+    width: 40px;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    text-align: right;
+    font-family: var(--font-sans);
+    padding: 0;
+    -moz-appearance: textfield;
+}
+
+.slider-number-input::-webkit-outer-spin-button,
+.slider-number-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.slider-number-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.slider-percent {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+}
+
+#tab-trends .trend-controls {
+    display: flex;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--warm-100);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--warm-300);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--warm-400);
+}
+
+/* Print Styles */
+@media print {
+
+    .header,
+    .footer,
+    .controls-row {
+        display: none;
+    }
+
+    .main-content {
+        padding: 0;
+    }
+
+    .card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}

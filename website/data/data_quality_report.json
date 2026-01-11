@@ -1,0 +1,170 @@
+{
+  "generated_at": "2026-01-11T09:21:11.777614",
+  "summary": {
+    "total_records": 2866430,
+    "year_range": [
+      1996,
+      2024
+    ],
+    "unique_employers": 7684,
+    "unique_persons": 1151694,
+    "unique_job_titles": 201603,
+    "total_compensation_sum": 367737741240.5752,
+    "mean_compensation": 128291.24364865664,
+    "median_compensation": 116754.8
+  },
+  "issue_counts": {
+    "high": 2,
+    "medium": 1,
+    "low": 1,
+    "info": 2
+  },
+  "issues": [
+    {
+      "check": "null_values",
+      "field": "first_name",
+      "null_count": 0,
+      "empty_count": 3,
+      "severity": "medium"
+    },
+    {
+      "check": "null_values",
+      "field": "total_comp",
+      "null_count": 1,
+      "empty_count": 0,
+      "severity": "high"
+    },
+    {
+      "check": "high_salary",
+      "count": 9,
+      "max_value": 12817572.55,
+      "severity": "info",
+      "sample": [
+        {
+          "first_name": "JAMES F",
+          "last_name": "HANKINSON",
+          "employer_canonical": "ONTARIO POWER GENERATION",
+          "total_comp": 2484945.89,
+          "year": 2008
+        },
+        {
+          "first_name": "JAMES F.",
+          "last_name": "HANKINSON",
+          "employer_canonical": "ONTARIO POWER GENERATION",
+          "total_comp": 2152748.19,
+          "year": 2009
+        },
+        {
+          "first_name": "JOANNE",
+          "last_name": "YELLE-WEATHERALL",
+          "employer_canonical": "SCO HEALTH SERVICE",
+          "total_comp": 12745983.52,
+          "year": 2006
+        },
+        {
+          "first_name": "Kenneth",
+          "last_name": "Hartwick",
+          "employer_canonical": "ONTARIO POWER GENERATION",
+          "total_comp": 2018435.6,
+          "year": 2024
+        },
+        {
+          "first_name": "MICHAEL",
+          "last_name": "NOBREGA",
+          "employer_canonical": "OMERS ADMINISTRATION CORPORATION",
+          "total_comp": 2003859.41,
+          "year": 2008
+        }
+      ]
+    },
+    {
+      "check": "large_headcount_drops",
+      "count": 32,
+      "severity": "info",
+      "samples": [
+        {
+          "employer": "HEALTH LONG TERM CARE",
+          "year": 2001,
+          "prev_count": 184,
+          "curr_count": 1,
+          "drop_pct": 99.5
+        },
+        {
+          "employer": "TORONTO PUBLIC LIBRARY",
+          "year": 2002,
+          "prev_count": 78,
+          "curr_count": 13,
+          "drop_pct": 83.3
+        },
+        {
+          "employer": "FINANCE",
+          "year": 2003,
+          "prev_count": 129,
+          "curr_count": 64,
+          "drop_pct": 50.4
+        },
+        {
+          "employer": "CANCER CARE ONTARIO",
+          "year": 2004,
+          "prev_count": 135,
+          "curr_count": 42,
+          "drop_pct": 68.9
+        },
+        {
+          "employer": "REGIONAL MUNICIPALITY OF NIAGARA",
+          "year": 2008,
+          "prev_count": 160,
+          "curr_count": 56,
+          "drop_pct": 65.0
+        },
+        {
+          "employer": "CITY OF CORNWALL",
+          "year": 2010,
+          "prev_count": 81,
+          "curr_count": 39,
+          "drop_pct": 51.9
+        },
+        {
+          "employer": "CITY OF NORTH BAY",
+          "year": 2010,
+          "prev_count": 85,
+          "curr_count": 40,
+          "drop_pct": 52.9
+        },
+        {
+          "employer": "CITY OF WINDSOR",
+          "year": 2011,
+          "prev_count": 242,
+          "curr_count": 103,
+          "drop_pct": 57.4
+        },
+        {
+          "employer": "CITY OF OTTAWA - POLICE SERVICES BOARD",
+          "year": 2013,
+          "prev_count": 369,
+          "curr_count": 1,
+          "drop_pct": 99.7
+        },
+        {
+          "employer": "ONTARIO COLLEGE OF ART DESIGN UNIVERSITY",
+          "year": 2013,
+          "prev_count": 94,
+          "curr_count": 25,
+          "drop_pct": 73.4
+        }
+      ]
+    },
+    {
+      "check": "exact_duplicates",
+      "count": 2395,
+      "unique_groups": 1197,
+      "severity": "high"
+    },
+    {
+      "check": "same_person_employer_year",
+      "count": 3360,
+      "severity": "low",
+      "note": "May indicate job changes within same year/employer"
+    }
+  ]
+}

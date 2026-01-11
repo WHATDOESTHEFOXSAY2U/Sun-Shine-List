@@ -1,0 +1,30 @@
+# System files
+.DS_Store
+__pycache__/
+*.pyc
+
+# Local config
+.vscode/
+.idea/
+
+# Large Data (API Raw/Staging)
+# We keep curated/analytics for the static site, but exclude raw source files usually
+# unless user wants them in git (they can be huge).
+# Given "Sunshine List" is large, let's exclude raw CSVs/Parquets to respect GitHub limits (100MB).
+API/raw/*.csv
+API/raw/*.zip
+API/staging/*.parquet
+# Keep API/curated/fact_comp.parquet? It might be large.
+# Let's verify size before committing. For now, exclude large parquets.
+*.parquet
+*.zip
+
+# Virtual Env
+venv/
+env/
+.env
+
+# Website Data (Generated)
+# We SHOULD commit website/data so the site works out of the box on GH Pages.
+# But we should ignore the local cache in API/analytics if it's redundant.
+# Actually, keep both for now or just website/data.

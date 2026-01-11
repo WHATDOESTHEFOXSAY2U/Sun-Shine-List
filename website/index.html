@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Ontario Sunshine List - Explore 29 years of public sector salary data. Find employers, compare salaries, and discover career opportunities.">
+    <meta name="keywords"
+        content="Ontario Sunshine List, public sector salaries, government jobs, salary data, employer rankings">
+    <title>Ontario Sunshine List | Public Sector Salary Explorer</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- Fuse.js for search -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo" onclick="navigateTo('distribution'); return false;">
+                <span class="logo-icon">☀️</span>
+                <span class="logo-text">Sunshine List</span>
+            </a>
+
+            <nav class="main-nav">
+                <button class="nav-btn active" data-tab="distribution">Distribution</button>
+                <button class="nav-btn" data-tab="top-earners">Top Earners</button>
+                <button class="nav-btn" data-tab="employers">Employers</button>
+                <button class="nav-btn" data-tab="jobs">Jobs</button>
+                <button class="nav-btn" data-tab="find-employer">Find Employer</button>
+                <button class="nav-btn" data-tab="sectors">Sectors</button>
+                <button class="nav-btn" data-tab="trends">Trends</button>
+            </nav>
+
+            <div class="search-container">
+                <input type="text" class="search-input" id="global-search"
+                    placeholder="Search employers or individuals..." autocomplete="off">
+                <div class="search-results" id="search-results"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Tab: Pay Distribution (Landing) -->
+        <section id="tab-distribution" class="tab-content active">
+            <div class="page-header">
+                <h1>Ontario Public Sector Compensation</h1>
+                <p class="subtitle">29 years of salary data from the Ontario Sunshine List (1996-2024)</p>
+            </div>
+
+            <!-- Year Selector -->
+            <div class="controls-row">
+                <div class="control-group">
+                    <label for="dist-year">Year</label>
+                    <select id="dist-year" class="select-input"></select>
+                </div>
+                <div class="control-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="compare-prev" checked>
+                        Compare to previous year
+                    </label>
+                </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="metrics-grid" id="key-metrics">
+                <div class="metric-card">
+                    <div class="metric-label">Total Disclosures</div>
+                    <div class="metric-value" id="metric-headcount">--</div>
+                    <div class="metric-delta" id="metric-headcount-delta"></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Median Salary (P50)</div>
+                    <div class="metric-value" id="metric-median">--</div>
+                    <div class="metric-delta" id="metric-median-delta"></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Average Salary</div>
+                    <div class="metric-value" id="metric-mean">--</div>
+                    <div class="metric-delta" id="metric-mean-delta"></div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">90th Percentile</div>
+                    <div class="metric-value" id="metric-p90">--</div>
+                    <div class="metric-delta" id="metric-p90-delta"></div>
+                </div>
+                <div class="metric-card highlight">
+                    <div class="metric-label">Total Payroll</div>
+                    <div class="metric-value" id="metric-payroll">--</div>
+                    <div class="metric-delta" id="metric-payroll-delta"></div>
+                </div>
+            </div>
+
+            <!-- Percentile Breakdown -->
+            <div class="card">
+                <h2 class="card-title">Salary Percentiles</h2>
+                <div class="percentile-bars" id="percentile-bars">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="card chart-card">
+                    <h2 class="card-title">Salary Distribution</h2>
+                    <canvas id="distribution-chart"></canvas>
+                </div>
+                <div class="card chart-card">
+                    <h2 class="card-title">Compensation Buckets</h2>
+                    <div class="bucket-bars" id="bucket-bars">
+                        <!-- Generated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historical Trends -->
+            <div class="card">
+                <h2 class="card-title">Historical Trends (1996-2024)</h2>
+                <div class="trend-toggles">
+                    <label class="toggle-label">
+                        <input type="checkbox" class="trend-toggle" data-metric="median" checked>
+                        <span class="toggle-dot" style="background: var(--sunshine-500)"></span>
+                        Median
+                    </label>
+                    <label class="toggle-label">
+                        <input type="checkbox" class="trend-toggle" data-metric="mean">
+                        <span class="toggle-dot" style="background: var(--orange-500)"></span>
+                        Average
+                    </label>
+                    <label class="toggle-label">
+                        <input type="checkbox" class="trend-toggle" data-metric="headcount">
+                        <span class="toggle-dot" style="background: var(--info)"></span>
+                        Headcount
+                    </label>
+                    <label class="toggle-label">
+                        <input type="checkbox" class="trend-toggle" data-metric="p90">
+                        <span class="toggle-dot" style="background: var(--success)"></span>
+                        P90
+                    </label>
+                </div>
+                <canvas id="trend-chart"></canvas>
+            </div>
+        </section>
+
+        <!-- Tab: Top Earners -->
+        <section id="tab-top-earners" class="tab-content">
+            <div class="page-header">
+                <h1>Top Earners</h1>
+                <p class="subtitle">Highest paid individuals in Ontario's public sector</p>
+            </div>
+
+            <div class="controls-row">
+                <div class="control-group">
+                    <label for="earners-year">Year</label>
+                    <select id="earners-year" class="select-input"></select>
+                </div>
+                <div class="control-group">
+                    <label for="earners-sort">Sort By</label>
+                    <select id="earners-sort" class="select-input">
+                        <option value="total_comp">Total Compensation</option>
+                        <option value="salary">Base Salary</option>
+                        <option value="benefits">Benefits</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="earners-limit">Show</label>
+                    <select id="earners-limit" class="select-input">
+                        <option value="25">Top 25</option>
+                        <option value="50">Top 50</option>
+                        <option value="100" selected>Top 100</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="earners-search">Filter</label>
+                    <input type="text" id="earners-search" class="text-input" placeholder="Search by name...">
+                </div>
+            </div>
+
+            <div class="card table-card">
+                <table class="data-table" id="earners-table">
+                    <thead>
+                        <tr>
+                            <th class="col-rank">Rank</th>
+                            <th class="col-name">Name</th>
+                            <th class="col-employer">Employer</th>
+                            <th class="col-job">Job Title</th>
+                            <th class="col-money sortable" data-sort="salary">Salary</th>
+                            <th class="col-money sortable" data-sort="benefits">Benefits</th>
+                            <th class="col-money sortable active" data-sort="total_comp">Total Comp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="earners-tbody">
+                        <!-- Generated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tab: Top Employers -->
+        <section id="tab-employers" class="tab-content">
+            <div class="page-header">
+                <h1>Top Employers</h1>
+                <p class="subtitle">Compare compensation across Ontario's public sector employers</p>
+            </div>
+
+            <div class="controls-row">
+                <div class="control-group">
+                    <label for="employers-year">Year</label>
+                    <select id="employers-year" class="select-input"></select>
+                </div>
+                <div class="control-group">
+                    <label for="employers-rank">Rank By</label>
+                    <select id="employers-rank" class="select-input">
+                        <option value="p50">Median (P50)</option>
+                        <option value="p75">P75</option>
+                        <option value="p90">P90</option>
+                        <option value="mean_pay">Mean Pay</option>
+                        <option value="headcount">Headcount</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="employers-min-hc">Min Employees</label>
+                    <select id="employers-min-hc" class="select-input">
+                        <option value="10">10+</option>
+                        <option value="50" selected>50+</option>
+                        <option value="100">100+</option>
+                        <option value="500">500+</option>
+                        <option value="1000">1000+</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="employers-search">Search</label>
+                    <input type="text" id="employers-search" class="text-input" placeholder="Filter employers...">
+                </div>
+            </div>
+
+            <div class="card table-card">
+                <table class="data-table" id="employers-table">
+                    <thead>
+                        <tr>
+                            <th class="col-rank">Rank</th>
+                            <th class="col-name">Employer</th>
+                            <th class="col-sector">Sector</th>
+                            <th class="col-number">Employees</th>
+                            <th class="col-money">Mean</th>
+                            <th class="col-money">P50</th>
+                            <th class="col-money">P75</th>
+                            <th class="col-money">P90</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employers-tbody">
+                        <!-- Generated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tab: Top Jobs -->
+        <section id="tab-jobs" class="tab-content">
+            <div class="page-header">
+                <h1>Top Job Titles</h1>
+                <p class="subtitle">Discover the highest-paying job titles in Ontario's public sector</p>
+            </div>
+
+            <div class="controls-row">
+                <div class="control-group">
+                    <label for="jobs-year">Year</label>
+                    <select id="jobs-year" class="select-input"></select>
+                </div>
+                <div class="control-group">
+                    <label for="jobs-rank">Rank By</label>
+                    <select id="jobs-rank" class="select-input">
+                        <option value="p50">Median (P50)</option>
+                        <option value="p75">P75</option>
+                        <option value="p90">P90</option>
+                        <option value="mean_pay">Mean Pay</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="jobs-min-hc">Min Headcount</label>
+                    <select id="jobs-min-hc" class="select-input">
+                        <option value="5">5+</option>
+                        <option value="10" selected>10+</option>
+                        <option value="50">50+</option>
+                        <option value="100">100+</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="jobs-search">Search</label>
+                    <input type="text" id="jobs-search" class="text-input" placeholder="Filter job titles...">
+                </div>
+            </div>
+
+            <div class="card table-card">
+                <table class="data-table" id="jobs-table">
+                    <thead>
+                        <tr>
+                            <th class="col-rank">Rank</th>
+                            <th class="col-name">Job Title</th>
+                            <th class="col-family">Family</th>
+                            <th class="col-number">Headcount</th>
+                            <th class="col-money">Mean</th>
+                            <th class="col-money">P50</th>
+                            <th class="col-money">P75</th>
+                            <th class="col-money">P90</th>
+                        </tr>
+                    </thead>
+                    <tbody id="jobs-tbody">
+                        <!-- Generated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tab: Find Your Employer -->
+        <section id="tab-find-employer" class="tab-content">
+            <div class="page-header">
+                <h1>🎯 Find Your Ideal Employer</h1>
+                <p class="subtitle">Adjust what matters to you and discover the best employers</p>
+            </div>
+
+            <div class="card finder-card">
+                <h2 class="card-title">What Matters To You?</h2>
+                <p class="finder-description">Adjust the sliders to weight each factor. The scores will automatically
+                    sum to 100%.</p>
+
+                <div class="sliders-container">
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-icon">💰</span>
+                            <span class="slider-label">Pay</span>
+                            <div class="slider-value-container">
+                                <input type="number" id="pay-input" class="slider-number-input" value="40" min="0"
+                                    max="100">
+                                <span class="slider-percent">%</span>
+                            </div>
+                        </div>
+                        <input type="range" id="slider-pay" class="slider" min="0" max="100" value="40">
+                        <p class="slider-desc">Higher percentile salaries</p>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-icon">🏠</span>
+                            <span class="slider-label">Stay</span>
+                            <div class="slider-value-container">
+                                <input type="number" id="stay-input" class="slider-number-input" value="30" min="0"
+                                    max="100">
+                                <span class="slider-percent">%</span>
+                            </div>
+                        </div>
+                        <input type="range" id="slider-stay" class="slider" min="0" max="100" value="30">
+                        <p class="slider-desc">Employee retention rate</p>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span class="slider-icon">📈</span>
+                            <span class="slider-label">Grow</span>
+                            <div class="slider-value-container">
+                                <input type="number" id="grow-input" class="slider-number-input" value="30" min="0"
+                                    max="100">
+                                <span class="slider-percent">%</span>
+                            </div>
+                        </div>
+                        <input type="range" id="slider-grow" class="slider" min="0" max="100" value="30">
+                        <p class="slider-desc">Salary growth for retained employees</p>
+                    </div>
+                </div>
+
+                <div class="finder-controls">
+                    <div class="control-group">
+                        <label for="finder-year">Year</label>
+                        <select id="finder-year" class="select-input"></select>
+                    </div>
+                    <div class="control-group">
+                        <label for="finder-min-hc">Min Employees</label>
+                        <select id="finder-min-hc" class="select-input">
+                            <option value="50" selected>50+</option>
+                            <option value="100">100+</option>
+                            <option value="500">500+</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Top Ranked Employers</h2>
+                <div class="employer-rankings" id="finder-results">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab: Sectors -->
+        <section id="tab-sectors" class="tab-content">
+            <div class="page-header">
+                <h1>Sector Analysis</h1>
+                <p class="subtitle">Compare compensation across different sectors</p>
+            </div>
+
+            <div class="controls-row">
+                <div class="control-group">
+                    <label for="sectors-year">Year</label>
+                    <select id="sectors-year" class="select-input"></select>
+                </div>
+            </div>
+
+            <div class="card table-card">
+                <table class="data-table" id="sectors-table">
+                    <thead>
+                        <tr>
+                            <th class="col-name">Sector</th>
+                            <th class="col-number">Headcount</th>
+                            <th class="col-money">Median</th>
+                            <th class="col-money">P90</th>
+                            <th class="col-payroll">Payroll</th>
+                            <th class="col-delta">YoY Headcount</th>
+                            <th class="col-delta">YoY Pay</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sectors-tbody">
+                        <!-- Generated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card chart-card">
+                <h2 class="card-title">Sector Comparison Over Time</h2>
+                <div class="sector-toggles" id="sector-toggles">
+                    <!-- Generated by JS -->
+                </div>
+                <canvas id="sector-chart"></canvas>
+            </div>
+        </section>
+
+        <section id="tab-trends" class="tab-content">
+            <div class="page-header">
+                <h1>Public Sector Evolution</h1>
+                <p class="subtitle">Interactive history of the Ontario Sunshine List (1996-2024)</p>
+            </div>
+
+            <!-- Dynamic Year Stats -->
+            <div class="trend-year-header">
+                <h3>Snapshot: <span id="trend-current-year" class="highlight-text">2024</span></h3>
+            </div>
+
+            <div class="trend-grid">
+                <!-- Row 1: The Big Numbers -->
+                <div class="trend-card">
+                    <div class="trend-icon">👥</div>
+                    <div class="trend-label">Total Disclosures</div>
+                    <div class="trend-value" id="t-headcount">--</div>
+                    <div class="trend-sub" id="t-headcount-growth">--</div>
+                </div>
+                <div class="trend-card">
+                    <div class="trend-icon">💰</div>
+                    <div class="trend-label">Total Payroll</div>
+                    <div class="trend-value" id="t-payroll">--</div>
+                    <div class="trend-sub" id="t-payroll-inf">Inflation adjusted</div>
+                </div>
+                <div class="trend-card">
+                    <div class="trend-icon">📊</div>
+                    <div class="trend-label">Median Salary</div>
+                    <div class="trend-value" id="t-median">--</div>
+                    <div class="trend-sub">Middle earner</div>
+                </div>
+                <div class="trend-card">
+                    <div class="trend-icon">🏆</div>
+                    <div class="trend-label">Top Earner</div>
+                    <div class="trend-value" id="t-max">--</div>
+                    <div class="trend-sub" id="t-max-name">--</div>
+                </div>
+
+                <!-- Row 2: Deep Dives -->
+                <div class="trend-card">
+                    <div class="trend-icon">🏢</div>
+                    <div class="trend-label">Employers</div>
+                    <div class="trend-value" id="t-employers">--</div>
+                    <div class="trend-sub">Unique organizations</div>
+                </div>
+                <div class="trend-card">
+                    <div class="trend-icon">💎</div>
+                    <div class="trend-label">Elite Threshold (P99)</div>
+                    <div class="trend-value" id="t-p99">--</div>
+                    <div class="trend-sub">Top 1% cutoff</div>
+                </div>
+                <div class="trend-card">
+                    <div class="trend-icon">🐘</div>
+                    <div class="trend-label">Largest Sector</div>
+                    <div class="trend-value" id="t-large-sector">--</div>
+                    <div class="trend-sub" id="t-large-count">--</div>
+                </div>
+                <div class="trend-card">
+                    <div class="trend-icon">💸</div>
+                    <div class="trend-label">Highest Paying</div>
+                    <div class="trend-value" id="t-rich-sector">--</div>
+                    <div class="trend-sub" id="t-rich-avg">--</div>
+                </div>
+            </div>
+
+            <!-- Main Interactive Chart -->
+            <div class="card chart-card trend-main-card" style="margin-top: 2rem;">
+                <div class="card-header-row">
+                    <h2 class="card-title">Sector Composition Over Time</h2>
+                    <div class="chart-hint">👆 Hover over the chart to travel through time</div>
+                </div>
+                <div class="chart-container-large">
+                    <canvas id="stacked-trend-chart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Employer Profile Modal -->
+    <div class="modal" id="employer-modal">
+        <div class="modal-backdrop" onclick="closeModal('employer-modal')"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('employer-modal')">×</button>
+            <div id="employer-profile">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Individual Profile Modal -->
+    <div class="modal" id="individual-modal">
+        <div class="modal-backdrop" onclick="closeModal('individual-modal')"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('individual-modal')">×</button>
+            <div id="individual-profile">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <span class="footer-logo">☀️ Sunshine List Explorer</span>
+                <p>Making Ontario's public sector compensation data accessible and actionable.</p>
+            </div>
+            <div class="footer-section">
+                <strong>Data</strong>
+                <p>Source: <a href="https://www.ontario.ca/page/public-sector-salary-disclosure" target="_blank">Ontario
+                        Government</a></p>
+                <p>Years: 1996-2024 (29 years)</p>
+                <p>Records: 2.87 million disclosures</p>
+            </div>
+            <div class="footer-section">
+                <strong>About</strong>
+                <p>Data updated annually when new disclosures are released.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Sunshine List Explorer. Data is public information.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/components/distribution.js?v=20260111"></script>
+    <script src="js/components/topEarners.js"></script>
+    <script src="js/components/topEmployers.js"></script>
+    <script src="js/components/topJobs.js"></script>
+    <script src="js/components/findEmployer.js"></script>
+    <script src="js/components/sectors.js"></script>
+    <script src="js/components/trends.js"></script>
+    <script src="js/components/profiles.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
